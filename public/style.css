@@ -430,12 +430,30 @@ button {
 }
 
 .axis-value {
+  display: flex;
+  align-items: center;
   border-radius: 12px;
   background: #eff6ff;
   color: #2563eb;
-  padding: 6px 12px;
+  padding: 6px 10px;
   font-size: 18px;
   font-weight: 700;
+}
+
+.axis-input {
+  width: 40px;
+  background: transparent;
+  border: none;
+  color: #2563eb;
+  font-size: 18px;
+  font-weight: 700;
+  text-align: right;
+  outline: none;
+}
+
+.axis-card.disabled .axis-input {
+  cursor: not-allowed;
+  pointer-events: none;
 }
 
 .axis-svg {

@@ -63,7 +63,9 @@ function renderVerticalAxis(value) {
   const maxY = 35;
   const y = minY - (value / 180) * (minY - maxY);
 
-  verticalValue.textContent = value.toFixed(0);
+  if (document.activeElement !== verticalValue) {
+    verticalValue.value = value.toFixed(0);
+  }
 
   verticalActiveLine.setAttribute("x1", "150");
   verticalActiveLine.setAttribute("y1", String(minY));
@@ -82,7 +84,9 @@ function renderHorizontalAxis(value) {
   const visualAngle = 180 - value;
   const dot = polarToCartesian(center.x, center.y, radius, visualAngle);
 
-  horizontalValue.textContent = value.toFixed(0);
+  if (document.activeElement !== horizontalValue) {
+    horizontalValue.value = value.toFixed(0);
+  }
 
   horizontalFullArc.setAttribute(
     "d",
@@ -202,6 +206,34 @@ horizontalSvg.addEventListener("pointerup", async () => {
   if (mode === "MANUAL") {
     await sendServo("horizontal", horizontalAngle);
   }
+});
+
+function applyVerticalInput() {
+  if (mode !== "MANUAL") return;
+  const val = parseInt(verticalValue.value, 10);
+  if (!isNaN(val)) {
+    verticalAngle = Math.round(clamp(val, 0, 180));
+    renderVerticalAxis(verticalAngle);
+    sendServo("vertical", verticalAngle);
+  }
+}
+
+function applyHorizontalInput() {
+  if (mode !== "MANUAL") return;
+  const val = parseInt(horizontalValue.value, 10);
+  if (!isNaN(val)) {
+    horizontalAngle = Math.round(clamp(val, 0, 180));
+    renderHorizontalAxis(horizontalAngle);
+    sendServo("horizontal", horizontalAngle);
+  }
+}
+
+verticalValue.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") applyVerticalInput();
+});
+
+horizontalValue.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") applyHorizontalInput();
 });
 
 modeToggle.addEventListener("click", async () => {
