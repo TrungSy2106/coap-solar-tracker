@@ -5,6 +5,7 @@
 
 const char* WIFI_SSID = "TEN_WIFI";
 const char* WIFI_PASS = "MAT_KHAU_WIFI";
+const char* COAP_SECRET = "SUNTRAC123";
 
 #define LDR1_PIN 34
 #define LDR2_PIN 35
@@ -100,14 +101,36 @@ String getPayload(CoapPacket &packet) {
   return payload;
 }
 
+bool coapAuth(CoapPacket &packet, IPAddress ip, int port, String &outData) {
+  String payload = getPayload(packet);
+  String secret(COAP_SECRET);
+
+  if (payload == secret) {
+    outData = "";
+    return true;
+  }
+  if (payload.startsWith(secret + ":")) {
+    outData = payload.substring(secret.length() + 1);
+    return true;
+  }
+
+  coap.sendResponse(ip, port, packet.messageid, "ERR_UNAUTHORIZED");
+  return false;
+}
+
 void callbackState(CoapPacket &packet, IPAddress ip, int port) {
+  String data;
+  if (!coapAuth(packet, ip, port, data)) return;
+
   String response = buildStateJson();
   coap.sendResponse(ip, port, packet.messageid, response.c_str());
 }
 
 void callbackServo1(CoapPacket &packet, IPAddress ip, int port) {
-  String payload = getPayload(packet);
-  int angle = payload.toInt();
+  String data;
+  if (!coapAuth(packet, ip, port, data)) return;
+
+  int angle = data.toInt();
 
   if (mode != "MANUAL") {
     coap.sendResponse(ip, port, packet.messageid, "ERR_AUTO_MODE");
@@ -119,8 +142,10 @@ void callbackServo1(CoapPacket &packet, IPAddress ip, int port) {
 }
 
 void callbackServo2(CoapPacket &packet, IPAddress ip, int port) {
-  String payload = getPayload(packet);
-  int angle = payload.toInt();
+  String data;
+  if (!coapAuth(packet, ip, port, data)) return;
+
+  int angle = data.toInt();
 
   if (mode != "MANUAL") {
     coap.sendResponse(ip, port, packet.messageid, "ERR_AUTO_MODE");
@@ -132,11 +157,13 @@ void callbackServo2(CoapPacket &packet, IPAddress ip, int port) {
 }
 
 void callbackMode(CoapPacket &packet, IPAddress ip, int port) {
-  String payload = getPayload(packet);
-  payload.toUpperCase();
+  String data;
+  if (!coapAuth(packet, ip, port, data)) return;
 
-  if (payload == "AUTO" || payload == "MANUAL") {
-    mode = payload;
+  data.toUpperCase();
+
+  if (data == "AUTO" || data == "MANUAL") {
+    mode = data;
     coap.sendResponse(ip, port, packet.messageid, "OK");
   } else {
     coap.sendResponse(ip, port, packet.messageid, "ERR_INVALID_MODE");

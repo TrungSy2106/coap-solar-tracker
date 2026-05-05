@@ -5,7 +5,8 @@ const coap = require("coap");
 const app = express();
 
 const HTTP_PORT = 3000;
-const ESP_IP = "192.168.1.50";
+let ESP_IP = "192.168.1.50";
+let ESP_SECRET = "SUNTRAC123";
 const ESP_COAP_PORT = 5683;
 
 app.use(express.json());
@@ -14,6 +15,39 @@ app.use(express.static("./public"));
 function now() {
   return new Date().toLocaleTimeString("vi-VN");
 }
+
+function getCoapPayload(payload) {
+  if (ESP_SECRET) {
+    return payload ? `${ESP_SECRET}:${payload}` : ESP_SECRET;
+  }
+  return payload || "";
+}
+
+// Đọc / Cập nhật Cấu hình (IP & Secret)
+app.get("/api/config", (req, res) => {
+  res.json({ ip: ESP_IP, secret: ESP_SECRET });
+});
+
+app.post("/api/config", (req, res) => {
+  const { ip, secret } = req.body;
+  let updated = false;
+
+  if (ip && typeof ip === "string" && ip.trim() !== "") {
+    ESP_IP = ip.trim();
+    updated = true;
+  }
+  if (secret !== undefined && typeof secret === "string") {
+    ESP_SECRET = secret.trim();
+    updated = true;
+  }
+
+  if (updated) {
+    console.log(`[${now()}] BE: Cập nhật Config: IP = ${ESP_IP}, Secret = ${ESP_SECRET ? "***" : "none"}`);
+    res.json({ ok: true, ip: ESP_IP, secret: ESP_SECRET });
+  } else {
+    res.status(400).json({ error: "INVALID_CONFIG", message: "Config không hợp lệ" });
+  }
+});
 
 // Đọc toàn bộ trạng thái từ ESP
 app.get("/api/state", (req, res) => {
@@ -59,6 +93,8 @@ app.get("/api/state", (req, res) => {
     });
   });
 
+  const payload = getCoapPayload("");
+  if (payload) coapReq.write(payload);
   coapReq.end();
 });
 
@@ -114,7 +150,7 @@ app.post("/api/servo/vertical", (req, res) => {
     });
   });
 
-  coapReq.write(JSON.stringify({ angle }));
+  coapReq.write(getCoapPayload(String(angle)));
   coapReq.end();
 });
 
@@ -170,7 +206,7 @@ app.post("/api/servo/horizontal", (req, res) => {
     });
   });
 
-  coapReq.write(JSON.stringify({ angle }));
+  coapReq.write(getCoapPayload(String(angle)));
   coapReq.end();
 });
 
@@ -225,7 +261,7 @@ app.post("/api/mode", (req, res) => {
     });
   });
 
-  coapReq.write(JSON.stringify({ mode }));
+  coapReq.write(getCoapPayload(mode));
   coapReq.end();
 });
 

@@ -347,5 +347,80 @@ renderVerticalAxis(verticalAngle);
 renderHorizontalAxis(horizontalAngle);
 updateEspStatus(false);
 
+// --- CÀI ĐẶT ---
+const settingsBtn = document.getElementById("settingsBtn");
+const settingsModal = document.getElementById("settingsModal");
+const closeSettingsBtn = document.getElementById("closeSettingsBtn");
+const cancelSettingsBtn = document.getElementById("cancelSettingsBtn");
+const saveSettingsBtn = document.getElementById("saveSettingsBtn");
+const espIpInput = document.getElementById("espIpInput");
+const espSecretInput = document.getElementById("espSecretInput");
+
+function openModal() {
+  settingsModal.classList.add("active");
+  loadConfig();
+}
+function closeModal() {
+  settingsModal.classList.remove("active");
+}
+
+settingsBtn.addEventListener("click", openModal);
+closeSettingsBtn.addEventListener("click", closeModal);
+cancelSettingsBtn.addEventListener("click", closeModal);
+
+settingsModal.addEventListener("click", (e) => {
+  if (e.target === settingsModal) closeModal();
+});
+
+async function loadConfig() {
+  try {
+    const res = await fetch("/api/config");
+    if (res.ok) {
+      const data = await res.json();
+      espIpInput.value = data.ip || "";
+      espSecretInput.value = data.secret || "";
+    }
+  } catch (e) {
+    console.error("Lỗi lấy Config:", e);
+  }
+}
+
+saveSettingsBtn.addEventListener("click", async () => {
+  const ip = espIpInput.value.trim();
+  const secret = espSecretInput.value.trim();
+  
+  if (!ip) {
+    alert("IP không được để trống!");
+    return;
+  }
+  
+  const originalText = saveSettingsBtn.textContent;
+  saveSettingsBtn.textContent = "Đang lưu...";
+  try {
+    const res = await fetch("/api/config", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ip, secret })
+    });
+    if (res.ok) {
+      saveSettingsBtn.style.background = "#10b981";
+      saveSettingsBtn.textContent = "Đã lưu!";
+      setTimeout(() => {
+        saveSettingsBtn.style.background = "";
+        saveSettingsBtn.textContent = originalText;
+        closeModal();
+      }, 1000);
+    } else {
+      alert("Lỗi khi lưu cấu hình!");
+      saveSettingsBtn.textContent = originalText;
+    }
+  } catch (e) {
+    console.error("Lỗi lưu Config:", e);
+    alert("Lỗi mạng khi lưu cấu hình!");
+    saveSettingsBtn.textContent = originalText;
+  }
+});
+
+loadConfig();
 loadState();
 setInterval(loadState, 1500);
