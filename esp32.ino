@@ -3,8 +3,8 @@
 #include <coap-simple.h>
 #include <ESP32Servo.h>
 
-const char* WIFI_SSID = "HOANG TAN";
-const char* WIFI_PASS = "0795617961";
+const char* WIFI_SSID = "sds";
+const char* WIFI_PASS = "dsds";
 
 String SECRET_KEY = "SUNTRAC123";
 
@@ -183,28 +183,28 @@ bool verifySecret(CoapPacket &packet, String &data)
 
 String buildStateJson()
 {
-  int lt = readLDR(LDR_TOP_LEFT);
-  int rt = readLDR(LDR_TOP_RIGHT);
-  int ld = readLDR(LDR_BOTTOM_LEFT);
-  int rd = readLDR(LDR_BOTTOM_RIGHT);
-
   String json = "{";
-  json += "\"lt\":" + String(lt) + ",";
-  json += "\"rt\":" + String(rt) + ",";
-  json += "\"ld\":" + String(ld) + ",";
-  json += "\"rd\":" + String(rd) + ",";
-  json += "\"ldr1\":" + String(lt) + ",";
-  json += "\"ldr2\":" + String(rt) + ",";
-  json += "\"ldr3\":" + String(ld) + ",";
-  json += "\"ldr4\":" + String(rd) + ",";
-  json += "\"vertical\":" + String(servovert) + ",";
-  json += "\"horizontal\":" + String(servohori) + ",";
-  json += "\"servo1\":" + String(servovert) + ",";
-  json += "\"servo2\":" + String(servohori) + ",";
-  json += "\"mode\":\"" + modeText() + "\",";
-  json += "\"app_state\":\"RUNNING\",";
-  json += "\"system_state\":\"RUNNING\"";
-  json += "}";
+
+  json += "\"lt\":" + String(readLDR(LDR_TOP_LEFT)) + ",";
+  json += "\"rt\":" + String(readLDR(LDR_TOP_RIGHT)) + ",";
+  json += "\"ld\":" + String(readLDR(LDR_BOTTOM_LEFT)) + ",";
+  json += "\"rd\":" + String(readLDR(LDR_BOTTOM_RIGHT)) + ",";
+
+  json += "\"v\":" + String(servovert) + ",";
+  json += "\"h\":" + String(servohori) + ",";
+
+  json += "\"m\":\"";
+
+  if(currentMode == MODE_AUTO)
+  {
+    json += "A";
+  }
+  else
+  {
+    json += "M";
+  }
+
+  json += "\"}";
 
   return json;
 }
