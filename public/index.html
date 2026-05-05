@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Dashboard</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;800;900&display=swap"
+    rel="stylesheet"
+  >
+
+  <link rel="stylesheet" href="style.css" />
+
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+  />
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+  <div class="app">
+    <header class="header">
+      <div class="header-inner">
+        <div>
+          <h1>Dashboard</h1>
+        </div>
+
+        <div class="header-right">
+          <button id="settingsBtn" class="settings-btn" title="Cài đặt">
+            <i class="fa-solid fa-gear"></i>
+          </button>
+
+          <div class="online-badge" id="onlineBadge">
+            <svg class="icon icon-sm" viewBox="0 0 24 24">
+              <path d="M5 12.55a11 11 0 0 1 14.08 0"></path>
+              <path d="M8.5 16.05a6 6 0 0 1 7 0"></path>
+              <path d="M12 20h.01"></path>
+            </svg>
+            <span id="onlineText">Online</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="main-layout">
+      <section class="left-layout">
+        <section class="sensor-grid">
+          <article class="sensor-card">
+            <div class="sensor-head">
+              <div class="sensor-icon orange">
+                <svg class="icon" viewBox="0 0 24 24">
+                  <circle cx="12" cy="12" r="4"></circle>
+                  <path d="M12 2v2"></path>
+                  <path d="M12 20v2"></path>
+                  <path d="m4.93 4.93 1.41 1.41"></path>
+                  <path d="m17.66 17.66 1.41 1.41"></path>
+                  <path d="M2 12h2"></path>
+                  <path d="M20 12h2"></path>
+                  <path d="m6.34 17.66-1.41 1.41"></path>
+                  <path d="m19.07 4.93-1.41 1.41"></path>
+                </svg>
+              </div>
+
+              <span class="sensor-tag orange">LDR 1</span>
+            </div>
+
+            <p class="sensor-label">Top Left Sensor</p>
+
+            <div class="sensor-value">
+              <span id="topLeftValue">0</span>
+              <small>Lux</small>
+            </div>
+          </article>
+
+          <article class="sensor-card">
+            <div class="sensor-head">
+              <div class="sensor-icon blue">
+                <svg class="icon" viewBox="0 0 24 24">
+                  <circle cx="12" cy="12" r="4"></circle>
+                  <path d="M12 2v2"></path>
+                  <path d="M12 20v2"></path>
+                  <path d="m4.93 4.93 1.41 1.41"></path>
+                  <path d="m17.66 17.66 1.41 1.41"></path>
+                  <path d="M2 12h2"></path>
+                  <path d="M20 12h2"></path>
+                  <path d="m6.34 17.66-1.41 1.41"></path>
+                  <path d="m19.07 4.93-1.41 1.41"></path>
+                </svg>
+              </div>
+
+              <span class="sensor-tag blue">LDR 2</span>
+            </div>
+
+            <p class="sensor-label">Top Right Sensor</p>
+
+            <div class="sensor-value">
+              <span id="topRightValue">0</span>
+              <small>Lux</small>
+            </div>
+          </article>
+
+          <article class="esp-card">
+            <div class="esp-inner">
+              <div>
+                <p class="sensor-label">Trạng thái ESP</p>
+
+                <div class="esp-value online" id="espStatusValue">
+                  Online
+                </div>
+
+                <p class="esp-sub" id="appStateValue">
+                  Trạng thái: đang hoạt động
+                </p>
+              </div>
+
+              <div class="esp-icon online" id="espIcon">
+                <i class="fa-solid fa-microchip"></i>
+              </div>
+            </div>
+          </article>
+
+          <article class="sensor-card">
+            <div class="sensor-head">
+              <div class="sensor-icon green">
+                <svg class="icon" viewBox="0 0 24 24">
+                  <circle cx="12" cy="12" r="4"></circle>
+                  <path d="M12 2v2"></path>
+                  <path d="M12 20v2"></path>
+                  <path d="m4.93 4.93 1.41 1.41"></path>
+                  <path d="m17.66 17.66 1.41 1.41"></path>
+                  <path d="M2 12h2"></path>
+                  <path d="M20 12h2"></path>
+                  <path d="m6.34 17.66-1.41 1.41"></path>
+                  <path d="m19.07 4.93-1.41 1.41"></path>
+                </svg>
+              </div>
+
+              <span class="sensor-tag green">LDR 3</span>
+            </div>
+
+            <p class="sensor-label">Bottom Left Sensor</p>
+
+            <div class="sensor-value">
+              <span id="bottomLeftValue">0</span>
+              <small>Lux</small>
+            </div>
+          </article>
+
+          <article class="sensor-card">
+            <div class="sensor-head">
+              <div class="sensor-icon red">
+                <svg class="icon" viewBox="0 0 24 24">
+                  <circle cx="12" cy="12" r="4"></circle>
+                  <path d="M12 2v2"></path>
+                  <path d="M12 20v2"></path>
+                  <path d="m4.93 4.93 1.41 1.41"></path>
+                  <path d="m17.66 17.66 1.41 1.41"></path>
+                  <path d="M2 12h2"></path>
+                  <path d="M20 12h2"></path>
+                  <path d="m6.34 17.66-1.41 1.41"></path>
+                  <path d="m19.07 4.93-1.41 1.41"></path>
+                </svg>
+              </div>
+
+              <span class="sensor-tag red">LDR 4</span>
+            </div>
+
+            <p class="sensor-label">Bottom Right Sensor</p>
+
+            <div class="sensor-value">
+              <span id="bottomRightValue">0</span>
+              <small>Lux</small>
+            </div>
+          </article>
+        </section>
+
+        <article class="chart-card">
+          <div class="chart-head">
+            <div class="chart-icon">
+              <svg class="icon icon-chart" viewBox="0 0 24 24">
+                <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+              </svg>
+            </div>
+
+            <div>
+              <h3>Biểu đồ ánh sáng</h3>
+              <p>4 cảm biến LDR</p>
+            </div>
+          </div>
+
+          <div class="chart-shell">
+            <canvas id="sensorChart"></canvas>
+          </div>
+        </article>
+      </section>
+
+      <aside class="control-panel">
+        <div class="control-head">
+          <h2>Điều khiển thiết bị</h2>
+
+          <div class="mode-wrap">
+            <span id="modeText">AUTO</span>
+
+            <button id="modeToggle" class="mode-toggle active" type="button">
+              <span></span>
+            </button>
+          </div>
+        </div>
+
+        <div class="axis-list">
+          <section class="axis-card disabled" id="verticalCard">
+            <div class="axis-head">
+              <div>
+                <h3>Trục dọc</h3>
+                <p>Điều chỉnh lên / xuống</p>
+              </div>
+
+              <div class="axis-value">
+                <input type="text" id="verticalValue" value="90" class="axis-input" />°
+              </div>
+            </div>
+
+            <svg class="axis-svg" id="verticalSvg" viewBox="0 0 300 178">
+              <text x="105" y="150" class="axis-text">0°</text>
+              <text x="105" y="94" class="axis-text">90°</text>
+              <text x="105" y="38" class="axis-text">180°</text>
+
+              <line
+                x1="150"
+                y1="145"
+                x2="150"
+                y2="35"
+                class="axis-line-bg"
+              ></line>
+
+              <line
+                id="verticalActiveLine"
+                x1="150"
+                y1="145"
+                x2="150"
+                y2="90"
+                class="axis-line-active"
+              ></line>
+
+              <circle
+                id="verticalDotOuter"
+                cx="150"
+                cy="90"
+                r="13"
+                class="axis-dot-outer"
+              ></circle>
+
+              <circle
+                id="verticalDotInner"
+                cx="150"
+                cy="90"
+                r="4"
+                class="axis-dot-inner"
+              ></circle>
+
+              <text x="150" y="166" class="axis-bottom-text">Trục dọc</text>
+            </svg>
+          </section>
+
+          <section class="axis-card disabled" id="horizontalCard">
+            <div class="axis-head">
+              <div>
+                <h3>Trục ngang</h3>
+                <p>Điều chỉnh trái / phải</p>
+              </div>
+
+              <div class="axis-value">
+                <input type="text" id="horizontalValue" value="90" class="axis-input" />°
+              </div>
+            </div>
+
+            <svg class="axis-svg" id="horizontalSvg" viewBox="0 0 300 178">
+              <text x="38" y="131" class="axis-text">0°</text>
+              <text x="150" y="46" class="axis-text">90°</text>
+              <text x="262" y="131" class="axis-text">180°</text>
+
+              <path
+                id="horizontalFullArc"
+                class="axis-arc-bg"
+              ></path>
+
+              <path
+                id="horizontalActiveArc"
+                class="axis-arc-active"
+              ></path>
+
+              <circle
+                id="horizontalCenterOuter"
+                r="13"
+                class="axis-center-outer"
+              ></circle>
+
+              <circle
+                id="horizontalCenterInner"
+                r="5"
+                class="axis-center-inner"
+              ></circle>
+
+              <circle
+                id="horizontalArcDotOuter"
+                r="13"
+                class="axis-dot-outer"
+              ></circle>
+
+              <circle
+                id="horizontalArcDotInner"
+                r="4"
+                class="axis-dot-inner"
+              ></circle>
+
+              <text x="150" y="162" class="axis-bottom-text">Trục ngang</text>
+            </svg>
+          </section>
+        </div>
+      </aside>
+    </main>
+  </div>
+
+  <div class="modal-overlay" id="settingsModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Cài đặt ESP32</h2>
+        <button id="closeSettingsBtn" class="modal-close"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="espIpInput">IP Address</label>
+          <input type="text" id="espIpInput" class="modal-input" placeholder="192.168.1.50" />
+        </div>
+        <div class="form-group">
+          <label for="espSecretInput">Secret Key</label>
+          <input type="password" id="espSecretInput" class="modal-input" placeholder="Nhập Secret Key" />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="cancelSettingsBtn" class="btn-cancel">Hủy</button>
+        <button id="saveSettingsBtn" class="btn-save">Lưu cấu hình</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
