@@ -62,35 +62,55 @@ app.get("/api/state", (req, res) => {
   });
 
   let responseText = "";
+  let responded = false;
+  
+  const timer = setTimeout(() => {
+    if (!responded) {
+      responded = true;
+      console.log(`[${now()}] WARN: TIMEOUT GET /state`);
+      res.status(504).json({ error: "TIMEOUT", message: "ESP không phản hồi sau 5s" });
+    }
+  }, 5000);
 
   coapReq.on("response", (coapRes) => {
+    if (responded) return;
+    clearTimeout(timer);
+
     coapRes.on("data", (chunk) => {
       responseText += chunk.toString();
     });
 
     coapRes.on("end", () => {
+      if (responded) return;
+      responded = true;
       console.log(`[${now()}] ESP -> BE: /state ${responseText}`);
 
       try {
         res.json(JSON.parse(responseText));
       } catch (err) {
         console.log(`[${now()}] ERROR: ESP JSON sai`);
-
-        res.status(500).json({
-          error: "INVALID_JSON_FROM_ESP",
-          message: "ESP trả dữ liệu không đúng JSON",
-        });
+        if (!res.headersSent) {
+          res.status(500).json({
+            error: "INVALID_JSON_FROM_ESP",
+            message: "ESP trả dữ liệu không đúng JSON",
+          });
+        }
       }
     });
   });
 
   coapReq.on("error", (err) => {
+    if (responded) return;
+    responded = true;
+    clearTimeout(timer);
     console.log(`[${now()}] ERROR: GET /state ${err.message}`);
 
-    res.status(500).json({
-      error: "ESP_OFFLINE",
-      message: "Không đọc được dữ liệu từ ESP",
-    });
+    if (!res.headersSent) {
+      res.status(500).json({
+        error: "ESP_OFFLINE",
+        message: "Không đọc được dữ liệu từ ESP",
+      });
+    }
   });
 
   const payload = getCoapPayload("");
@@ -123,13 +143,27 @@ app.post("/api/servo/vertical", (req, res) => {
   });
 
   let responseText = "";
+  let responded = false;
+  
+  const timer = setTimeout(() => {
+    if (!responded) {
+      responded = true;
+      console.log(`[${now()}] WARN: TIMEOUT PUT /servo1`);
+      res.status(504).json({ error: "TIMEOUT", message: "ESP không phản hồi sau 5s" });
+    }
+  }, 5000);
 
   coapReq.on("response", (coapRes) => {
+    if (responded) return;
+    clearTimeout(timer);
+
     coapRes.on("data", (chunk) => {
       responseText += chunk.toString();
     });
 
     coapRes.on("end", () => {
+      if (responded) return;
+      responded = true;
       console.log(`[${now()}] ESP -> BE: /servo1 ${responseText}`);
 
       res.json({
@@ -142,12 +176,17 @@ app.post("/api/servo/vertical", (req, res) => {
   });
 
   coapReq.on("error", (err) => {
+    if (responded) return;
+    responded = true;
+    clearTimeout(timer);
     console.log(`[${now()}] ERROR: PUT /servo1 ${err.message}`);
 
-    res.status(500).json({
-      error: "SERVO1_FAILED",
-      message: "Không gửi được lệnh servo dọc xuống ESP",
-    });
+    if (!res.headersSent) {
+      res.status(500).json({
+        error: "SERVO1_FAILED",
+        message: "Không gửi được lệnh servo dọc xuống ESP",
+      });
+    }
   });
 
   coapReq.write(getCoapPayload(String(angle)));
@@ -179,13 +218,27 @@ app.post("/api/servo/horizontal", (req, res) => {
   });
 
   let responseText = "";
+  let responded = false;
+  
+  const timer = setTimeout(() => {
+    if (!responded) {
+      responded = true;
+      console.log(`[${now()}] WARN: TIMEOUT PUT /servo2`);
+      res.status(504).json({ error: "TIMEOUT", message: "ESP không phản hồi sau 5s" });
+    }
+  }, 5000);
 
   coapReq.on("response", (coapRes) => {
+    if (responded) return;
+    clearTimeout(timer);
+
     coapRes.on("data", (chunk) => {
       responseText += chunk.toString();
     });
 
     coapRes.on("end", () => {
+      if (responded) return;
+      responded = true;
       console.log(`[${now()}] ESP -> BE: /servo2 ${responseText}`);
 
       res.json({
@@ -198,12 +251,17 @@ app.post("/api/servo/horizontal", (req, res) => {
   });
 
   coapReq.on("error", (err) => {
+    if (responded) return;
+    responded = true;
+    clearTimeout(timer);
     console.log(`[${now()}] ERROR: PUT /servo2 ${err.message}`);
 
-    res.status(500).json({
-      error: "SERVO2_FAILED",
-      message: "Không gửi được lệnh servo ngang xuống ESP",
-    });
+    if (!res.headersSent) {
+      res.status(500).json({
+        error: "SERVO2_FAILED",
+        message: "Không gửi được lệnh servo ngang xuống ESP",
+      });
+    }
   });
 
   coapReq.write(getCoapPayload(String(angle)));
@@ -235,13 +293,27 @@ app.post("/api/mode", (req, res) => {
   });
 
   let responseText = "";
+  let responded = false;
+  
+  const timer = setTimeout(() => {
+    if (!responded) {
+      responded = true;
+      console.log(`[${now()}] WARN: TIMEOUT PUT /mode`);
+      res.status(504).json({ error: "TIMEOUT", message: "ESP không phản hồi sau 5s" });
+    }
+  }, 5000);
 
   coapReq.on("response", (coapRes) => {
+    if (responded) return;
+    clearTimeout(timer);
+
     coapRes.on("data", (chunk) => {
       responseText += chunk.toString();
     });
 
     coapRes.on("end", () => {
+      if (responded) return;
+      responded = true;
       console.log(`[${now()}] ESP -> BE: /mode ${responseText}`);
 
       res.json({
@@ -253,12 +325,17 @@ app.post("/api/mode", (req, res) => {
   });
 
   coapReq.on("error", (err) => {
+    if (responded) return;
+    responded = true;
+    clearTimeout(timer);
     console.log(`[${now()}] ERROR: PUT /mode ${err.message}`);
 
-    res.status(500).json({
-      error: "MODE_FAILED",
-      message: "Không gửi được lệnh đổi mode xuống ESP",
-    });
+    if (!res.headersSent) {
+      res.status(500).json({
+        error: "MODE_FAILED",
+        message: "Không gửi được lệnh đổi mode xuống ESP",
+      });
+    }
   });
 
   coapReq.write(getCoapPayload(mode));

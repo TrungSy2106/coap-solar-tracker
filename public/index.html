@@ -340,7 +340,12 @@
         </div>
         <div class="form-group">
           <label for="espSecretInput">Secret Key</label>
-          <input type="password" id="espSecretInput" class="modal-input" placeholder="Nhập Secret Key" />
+          <div class="input-with-icon">
+            <input type="password" id="espSecretInput" class="modal-input" placeholder="Nhập Secret Key" />
+            <button type="button" id="toggleSecretBtn" class="toggle-password-btn" tabindex="-1">
+              <i class="fa-solid fa-eye" id="toggleSecretIcon"></i>
+            </button>
+          </div>
         </div>
       </div>
       <div class="modal-footer">

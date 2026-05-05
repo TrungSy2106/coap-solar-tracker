@@ -355,6 +355,8 @@ const cancelSettingsBtn = document.getElementById("cancelSettingsBtn");
 const saveSettingsBtn = document.getElementById("saveSettingsBtn");
 const espIpInput = document.getElementById("espIpInput");
 const espSecretInput = document.getElementById("espSecretInput");
+const toggleSecretBtn = document.getElementById("toggleSecretBtn");
+const toggleSecretIcon = document.getElementById("toggleSecretIcon");
 
 function openModal() {
   settingsModal.classList.add("active");
@@ -367,6 +369,16 @@ function closeModal() {
 settingsBtn.addEventListener("click", openModal);
 closeSettingsBtn.addEventListener("click", closeModal);
 cancelSettingsBtn.addEventListener("click", closeModal);
+
+toggleSecretBtn.addEventListener("click", () => {
+  if (espSecretInput.type === "password") {
+    espSecretInput.type = "text";
+    toggleSecretIcon.className = "fa-solid fa-eye-slash";
+  } else {
+    espSecretInput.type = "password";
+    toggleSecretIcon.className = "fa-solid fa-eye";
+  }
+});
 
 settingsModal.addEventListener("click", (e) => {
   if (e.target === settingsModal) closeModal();
